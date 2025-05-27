@@ -27,20 +27,27 @@ cat("Reading matrix\n")
 MImatrix <- vroom::vroom(snakemake@input[["mi_matrix"]])
 COND <- snakemake@params[["cond"]]
 
+MImatrix <- MImatrix %>% 
+  as.matrix()
+
+MImatrix[is.na(MImatrix)] <- 0
+MImatrix[lower.tri(MImatrix, diag = T)] <- NA
+
 genes <- colnames(MImatrix)
+MImatrix <- as_tibble(MImatrix)
 MImatrix$source <- genes
 
 cat("Annotating interactions\n")
 mi_vals <- MImatrix %>% pivot_longer(cols = starts_with("ENSG"), 
                                   names_to = "target",
-                                  values_to = "mi",
+                                  values_to = "mi", 
                                   values_drop_na = TRUE) %>% 
-  arrange(desc(mi)) %>%  
-  left_join(annot %>% dplyr::select(gene_id, chr), 
-                                 by = c("source" = "gene_id")) %>% 
+  arrange(desc(mi))  %>%  
+  left_join(annot %>% dplyr::select(ensembl_id, chr), 
+                                 by = c("source" = "ensembl_id"), multiple = "first") %>% 
   rename("source_chr" = "chr") %>%
-  left_join(annot %>% dplyr::select(gene_id, chr), 
-                                         by = c("target" = "gene_id")) %>% 
+  left_join(annot %>% dplyr::select(ensembl_id, chr), 
+                                         by = c("target" = "ensembl_id"),  multiple = "first") %>% 
   rename("target_chr" = "chr") %>%
   mutate(interaction = ifelse(source_chr == target_chr, "intra", "inter"),
          nrow = row_number())
@@ -71,7 +78,7 @@ furrr::future_map_dfr(bins, ~ onek_chunks %>%
   mutate(bin = as.numeric(bin),
          inter_fraction = round(inter/(intra+inter), 4),
          intra_fraction = round(intra/(intra+inter), 4),
-          cond = COND) %>%
+         cond = COND) %>%
   vroom_write(file = snakemake@output[["onek_bins"]])
 
 
@@ -93,9 +100,9 @@ bins <- unique(log_chunks$bin)
 names(bins) <- unique(log_chunks$bin)
 
 furrr::future_map_dfr(bins, ~ log_chunks %>% 
-                         filter(bin <= .x) %>% 
-                         select(intra, inter) %>% colSums(),
-                       .id = "bin") %>%
+                        filter(bin <= .x) %>% 
+                        select(intra, inter) %>% colSums(),
+                      .id = "bin") %>%
   mutate(bin = as.numeric(bin),
          inter_fraction = round(inter/(intra+inter), 4),
          intra_fraction = round(intra/(intra+inter), 4),
