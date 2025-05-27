@@ -42,10 +42,12 @@ chr_pal <- chr_pal[chrs]
 ## Todos los cromosomas
 g <- ggplot() +
   geom_point(data = mi_data,
-             mapping = aes(x = dist_mean/1e6, y = mi_mean), color = "gray65", size = 0.1) +
-  geom_line(data = fitted_data,
-            mapping = aes(x = dist_mean/1e6, y = mean_fitted, color=chr)) +
-  facet_grid(chr ~ cond, scales = "free_y") +
+             mapping = aes(x = dist_mean/1e6, y = mi_mean), color = "gray65", size = 0.1) 
+  if(nrow(fitted_data) > 0) {
+   g <- g + geom_line(data = fitted_data,
+              mapping = aes(x = dist_mean/1e6, y = mean_fitted, color=chr)) 
+  }
+g <- g +  facet_grid(chr ~ cond, scales = "free_y") +
   theme_few(base_size = 20) +
   theme(
     legend.position = "none",

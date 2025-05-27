@@ -35,7 +35,7 @@ fitted_data <- mi_data %>% group_by(cond) %>% nest() %>%
          min = minf_mi_min, min_fitted = minf_.fitted, min_resid = minf_.resid,
          max = maxf_mi_max, max_fitted = maxf_.fitted, max_resid = maxf_.resid) %>% 
   ungroup() %>% 
-  inner_join(mi_data %>% select(bin, cond, mi_sd, dist_mean))
+  inner_join(mi_data %>% select(bin, cond, mi_sd, dist_mean, median = mi_median))
 
 cat("Writing data\n")
 write_tsv(fitted_data, snakemake@output[[1]])
