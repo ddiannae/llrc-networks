@@ -22,6 +22,14 @@ MImatrix <- vroom::vroom(snakemake@input[["mi_matrix"]])
 genes <- colnames(MImatrix)
 
 cat("MI matrix with ", nrow(MImatrix), " rows and ", ncol(MImatrix), " columns loaded \n")
+MImatrix <- MImatrix %>% 
+  as.matrix()
+
+MImatrix[is.na(MImatrix)] <- 0
+MImatrix[lower.tri(MImatrix, diag = T)] <- NA
+
+genes <- colnames(MImatrix)
+MImatrix <- as_tibble(MImatrix)
 MImatrix$source <- genes
 
 cat("Getting intra-chromosomal interactions\n")
@@ -30,17 +38,17 @@ mi_vals <- MImatrix %>% pivot_longer(cols = starts_with("ENSG"),
                                      values_to = "mi",
                                      values_drop_na = TRUE) %>% 
   arrange(desc(mi)) %>% 
-  left_join(annot %>% dplyr::select(gene_id, chr, start), 
-            by = c("source" = "gene_id")) %>% 
+  left_join(annot %>% dplyr::select(ensembl_id, chr, start), 
+            by = c("source" = "ensembl_id"), multiple = "first") %>% 
   rename("source_chr" = "chr", "source_start" = "start") %>%
-  left_join(annot %>% dplyr::select(gene_id, chr, start), 
-            by = c("target" = "gene_id")) %>% 
+  left_join(annot %>% dplyr::select(ensembl_id, chr, start), 
+            by = c("target" = "ensembl_id"), multiple = "first") %>% 
   rename("target_chr" = "chr", "target_start" = "start") %>%
   mutate(interaction = ifelse(source_chr == target_chr, "intra", "inter"),
          nrow = row_number())
 rm(MImatrix)
 
-annot <- annot %>% filter(gene_id %in% genes)
+annot <- annot %>% filter(ensembl_id %in% genes)
 
 cat("Calculating distance between genes\n")
 mi_vals <- mi_vals %>% filter(interaction == "intra") %>% 
