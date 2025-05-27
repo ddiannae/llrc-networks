@@ -3,27 +3,33 @@ import glob
 def get_output_files(wildcards):
     files = []
     for t in config["tissues"]:
-        files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["algorithm"]}/enrichments/all-enrichments-{config["cutoff"]}.txt')
-        files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["algorithm"]}_plots/assortativity/assort-{config["cutoff"]}.txt')
-        files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["algorithm"]}_plots/network-plots-{config["cutoff"]}.txt')
-        files.append(f'{config["datadir"]}/{t}/{config["figdir"]}/intra-plots.txt')
-        files.append(f'{config["datadir"]}/{t}/{config["figdir"]}/intra-inter-plots.txt')
+        if config["end"] == "plots":
+            files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}/enrichments/all-enrichments-{config["cutoff"]}.txt')
+            files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/assortativity/assort-{config["cutoff"]}.txt')
+            files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/network-plots-{config["cutoff"]}.txt')
+            files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-plots.txt')
+            files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-inter-plots.txt')
+			for j in ["CD31", "CD10", "EPCAM", "CD45"]:
+    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/cancer_{j}_10000_vertices.tsv')
+    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/normal_{j}_10000_vertices.tsv')
+    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/cancer_{j}_100000_vertices.tsv')
+    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/normal_{j}_100000_vertices.tsv')
     return files
 
-def get_distance_dir(wildcards):
-    return f'{config["datadir"]}/{wildcards.tissue}/{config["distdir"]}' 
+def get_dist_dir():
+    return f'{config["distdir"]}_{config["data_format"]}' 
 
-def getMIMatrix(wildcards):
-    if config["algorithm"] == "aracne":
-        return [file for file in glob.glob(config["datadir"]+"/" +
-        wildcards["tissue"] + "/correlation/*_*_*_si-arsyn_" + wildcards["cond"] + "_mi.adj")]
-    elif config["algorithm"] == "infotheo":
-        return [file for file in glob.glob(config["datadir"]+"/" + wildcards["tissue"] + "/*_*_*_mi/" + wildcards["type"] + "_mi_matrix.adj")]
+def get_fig_dir():
+    return f'{config["figdir"]}_{config["data_format"]}'
+
+def get_mi_matrix(wildcards):
+    return f'{config["datadir"]}/{wildcards.tissue}/correlation/{config["data_format"]}_ensembl_{wildcards.cond}.adj'
 
 def getGeneUniverse(wildcards):
-    if config["algorithm"] == "aracne":
-        return [file for file in glob.glob(config["datadir"]+"/" +
-        wildcards["tissue"] + "/results/*_*_*_si-arsyn_genelist.txt")]
+    if config["data_format"] == "tpm" or config["data_format"] == "arsyn_tpm":
+        return f'{config["datadir"]}/{wildcards.tissue}/results/tpm_ensembl_genes.tsv'
+    elif config["data_format"] == "deseq2" or config["data_format"] == "arsyn_deseq2":
+        return f'{config["datadir"]}/{wildcards.tissue}/results/deseq2_ensembl_genes.tsv'
 
 def getDEGFile(wildcards):
         return [file for file in glob.glob(config["datadir"]+"/" + wildcards["tissue"] +

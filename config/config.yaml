@@ -1,10 +1,11 @@
 cutoff: 100000
-datadir: /datos/ot/diana/regulacion-trans
+datadir: /datos/ot/diana/llrc
 distdir: distance_analysis
 figdir: distance_plots
-netdir: network
+netdir: networks
+data_format: arsyn_tpm
 distbin: 100000
 sizebin: 1000
-algorithm: aracne
-tissues: ["bladder", "brain", "breast", "colorectal", "esophagus", "kidney", "liver", "lung", "ovary", "pancreas", "prostate", "testis", "thyroid","skin", "uterus"]
+tissues: ["bladder", "brain", "breast", "colon", "esophagus", "kidney", "liver", "lung", "ovary", "pancreas", "prostate", "testis", "thyroid", "uterus", "skin"]
 biomart: /home/dgarcia/Workspace/distance-analysis/input/Biomart_Ensembl80_GRCh38_p2_regions.tsv
+end: "plots"

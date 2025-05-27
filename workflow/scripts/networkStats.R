@@ -14,11 +14,11 @@ library(dplyr)
 
 cat("Reading files\n")
 interactions <- read_tsv(snakemake@input[["interactions"]]) %>% 
-  dplyr::rename("from" = "source_ensembl", "to" = "target_ensembl",
+  dplyr::rename("from" = "source", "to" = "target",
                 "weight" = "mi")
 
 vertices <- read_tsv(snakemake@input[["vertices"]]) %>% 
-  dplyr::rename("name" = "ensembl")
+  dplyr::rename("name" = "ensembl_id")
 
 cat("Building weighted graph\n")
 net <- igraph::graph_from_data_frame(interactions, directed=FALSE, 

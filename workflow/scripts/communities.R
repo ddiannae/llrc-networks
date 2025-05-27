@@ -38,11 +38,11 @@ getComInfo <- function(cmembership, network){
 
 cat("Reading files\n")
 interactions <- read_tsv(snakemake@input[["interactions"]])  %>% 
-  dplyr::rename("from" = "source_ensembl", "to" = "target_ensembl",
+  dplyr::rename("from" = "source", "to" = "target",
                 "weight" = "mi")
 
 vertices <- read_tsv(snakemake@input[["vertices"]]) %>% 
-  dplyr::rename("name" = "ensembl")
+  dplyr::rename("name" = "ensembl_id")
 
 if(type == "intra") {
   interactions <- interactions %>% filter(interaction_type == "Intra")
@@ -72,7 +72,7 @@ cat(algorithm, " communities: ", length(comm))
 names(comm$membership) <- comm$names
 
 df_comm <- data.frame(comm$names, comm$membership)
-colnames(df_comm) <- c("ensembl", "community")
+colnames(df_comm) <- c("ensembl_id", "community")
 
 comm_info <- getComInfo(comm$membership, net)
 

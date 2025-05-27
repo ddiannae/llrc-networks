@@ -17,7 +17,7 @@ wildcard_constraints:
     ctype="intra|all",
     etype="kegg|onco|ncg",
     commalg="louvain|fgreedy|infomap|leadeigen",
-    stat="mean|mean_fitted"
+    stat="mean|mean_fitted|median"
 
 
 rule all:
