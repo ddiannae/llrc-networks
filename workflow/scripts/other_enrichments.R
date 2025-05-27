@@ -19,14 +19,14 @@ gene_universe <- read_tsv(file = snakemake@input[["universe"]],
                           col_names = c("ensembl_id")) 
 
 gene_universe <- gene_universe %>% 
-  separate(col = ensembl_id, into = c("ensembl", "version"), sep = "\\.") %>%
-  pull(ensembl)
+  separate(col = ensembl_id, into = c("ensembl_id", "version"), sep = "\\.") %>%
+  pull(ensembl_id)
 
-membership_entrez <- bitr(membership$ensembl, fromType="ENSEMBL", 
+membership_entrez <- bitr(membership$ensembl_id, fromType="ENSEMBL", 
                           toType="ENTREZID", OrgDb="org.Hs.eg.db") 
-colnames(membership_entrez) <- c("ensembl", "entrez")
+colnames(membership_entrez) <- c("ensembl_id", "entrez")
 
-membership <- membership %>% full_join(membership_entrez, by = "ensembl")
+membership <- membership %>% full_join(membership_entrez, by = "ensembl_id")
   
 gene_universe_entrez <- bitr(gene_universe, fromType="ENSEMBL", 
                           toType="ENTREZID", OrgDb="org.Hs.eg.db") %>%

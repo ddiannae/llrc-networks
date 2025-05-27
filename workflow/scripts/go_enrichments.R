@@ -15,8 +15,8 @@ membership <- read_tsv(file=snakemake@input[["membership"]])
 gene_universe <- read_tsv(file=snakemake@input[["universe"]], col_names = c("ensembl_id")) 
 
 gene_universe <- gene_universe %>% 
-  separate(col = ensembl_id, into = c("ensembl", "version"), sep = "\\.") %>%
-  pull(ensembl)
+  separate(col = ensembl_id, into = c("ensembl_id", "version"), sep = "\\.") %>%
+  pull(ensembl_id)
 
 all_enrichments <- lapply(X = unique(membership$community),
                           FUN = function(com){
@@ -24,7 +24,7 @@ all_enrichments <- lapply(X = unique(membership$community),
 		cat("Working with community: ", com, "\n")
 
     gene_list <- membership %>% filter(community == com) %>%
-                        pull(ensembl)
+                        pull(ensembl_id)
     
     if(length(gene_list) >= 5) {
       
@@ -58,5 +58,3 @@ all_enrichments <- lapply(X = unique(membership$community),
 bind_rows(all_enrichments) %>% 
   janitor::clean_names() %>%
   write_tsv(snakemake@output[[1]])
-
-
