@@ -33,8 +33,8 @@ comm_info <- read_tsv(snakemake@input[["comm_info"]],
                       col_types = cols_only(com_id = col_double(), order = col_double(), 
                               pg_gene = col_character(), intra_fraction = col_double())) %>%
     left_join(read_tsv(snakemake@input[["vertices"]],
-                     col_types = cols_only(ensembl = col_character(), symbol = col_character())),
-            by = c("pg_gene" = "ensembl"))
+                     col_types = cols_only(ensembl_id = col_character(), symbol = col_character())),
+            by = c("pg_gene" = "ensembl_id"))
 
 cat("Getting enrichments\n")
 comm_enrich <- read_tsv(snakemake@input[["enrich"]], col_types = cols(p_adjust = col_double())) %>%

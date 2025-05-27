@@ -32,22 +32,24 @@ getAssortativityByAttr <- function(gr, n_attr) {
  
 COND <- snakemake@params[["cond"]]
 interactions <- read_tsv(snakemake@input[["interactions"]])
-vertices <-  read_tsv(snakemake@input[["expression"]])
+vertices <-  read_tsv(snakemake@input[["vertices"]])
+expression <- read_tsv(snakemake@input[["expression"]])
 membership <- read_tsv(snakemake@input[["membership"]])
 
+vertices <- vertices %>% 
+  left_join(membership, by = "ensembl_id") %>%
+  left_join(expression, by = c("ensembl_id" = "ensembl_id"))
+
 if(COND == "cancer") {
-  vertices <- vertices %>% mutate(exp = case_when(log_fc > 0 ~ "up",
-                                                  log_fc < 0 ~ "down",
-                                                  log_fc == 0 ~ "NA"),
+  vertices <- vertices %>% mutate(exp = case_when(log2FC > 0 ~ "up",
+                                                  log2FC < 0 ~ "down",
+                                                  log2FC == 0 ~ "NA"),
                                   exp = as.factor(exp),
-                                  diff_exp = case_when(log_fc >= 1 ~ "up",
-                                                  log_fc <= -1 ~ "down",
+                                  diff_exp = case_when(log2FC >= 1 ~ "up",
+                                                  log2FC <= -1 ~ "down",
                                                   TRUE ~ "no"),
                                   diff_exp = as.factor(diff_exp),)
 }
-
-vertices <- vertices %>% 
-  right_join(membership, by = c("ensembl_id" = "ensembl"))
 
 g <- graph_from_data_frame(interactions, vertices = vertices,
                            directed = FALSE)  
@@ -58,11 +60,11 @@ write_tsv(chr_assortativity, file = snakemake@output[["chr_assortativity"]])
 ## No expression assortativity for normal tissue
 if(COND == "cancer") {
   exp_summary <- vertices %>% group_by(community) %>%
-    summarise(mean_log_fc = mean(log_fc),
-              mean_avg_exp  =  mean(ave_expr))
+    summarise(mean_log_fc = mean(log2FC),
+              mean_avg_exp  =  mean(baseMean))
   
   diff_exp_summary <- vertices %>% group_by(community, diff_exp) %>% 
-    summarise(n = n(),  mean_log_fc = mean(log_fc)) %>% 
+    summarise(n = n(),  mean_log_fc = mean(log2FC)) %>% 
     mutate(freq = n/sum(n))
   
   exp_assortativity <- getAssortativityByAttr(g, "exp")
