@@ -1,9 +1,17 @@
-## #############################################################
-## This file builds a network of communities per condition
-## by counting the links between communities
-## It requires interactions and vertices files from networkTables.R 
-## and membership file from communities.R as input
-################################################################
+################################################################################
+## This script builds a network of communities for each condition by counting
+## the links between communities. It requires as input the interactions and
+## vertices files from networkTables.R, as well as the community membership
+## file from communities.R.
+##
+## Inputs:
+##   - Interactions table (from networkTables.R)
+##   - Vertices table (from networkTables.R)
+##   - Community membership table (from communities.R)
+##
+## Outputs:
+##   - Table of interactions between communities (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

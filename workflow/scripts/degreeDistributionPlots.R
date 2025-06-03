@@ -1,8 +1,18 @@
 ################################################################################
-## Script get a degree distribution and cumulative degree distribution plot of  
-## cancer an normal networks.
-## It requires the RData files from networStats.R as input
-###############################################################################
+## This script generates degree distribution and cumulative degree distribution
+## plots for cancer and normal gene networks. It requires as input the RData
+## files containing igraph network objects produced by networkStats.R.
+##
+## Inputs:
+##   - RData file with igraph network object for cancer (from networkStats.R)
+##   - RData file with igraph network object for normal (from networkStats.R)
+##   - Tissue name (for plot titles)
+##
+## Outputs:
+##   - Cumulative degree distribution plot (PNG)
+##   - Degree distribution plot (PNG)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

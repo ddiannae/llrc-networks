@@ -1,3 +1,22 @@
+################################################################################
+## This script compares cancer and normal gene networks by identifying shared,
+## cancer-only, and normal-only interactions. It computes the intersection and
+## differences between the interaction sets, and outputs corresponding edge and
+## vertex tables for each category.
+##
+## Inputs:
+##   - Interactions table for cancer network (from networkTables.R)
+##   - Interactions table for normal network (from networkTables.R)
+##   - Vertices table for cancer network (from networkTables.R)
+##   - Vertices table for normal network (from networkTables.R)
+##
+## Outputs:
+##   - Shared interactions table (TSV)
+##   - Cancer-only interactions table (TSV)
+##   - Normal-only interactions table (TSV)
+##   - Vertices for shared, cancer-only, and normal-only networks (TSV)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

@@ -1,9 +1,16 @@
-## #############################################################
-## This file gets the fraction of intra-chromosomal (and inter-
-## chromosomal) interactions for different thresholds of MI 
-## values, in both accumulated and chunk manners.
-## Input comes directly from the mi matrix.
-################################################################
+################################################################################
+## This script calculates the fraction of intra-chromosomal and inter-chromosomal
+## interactions across different Mutual Information (MI) thresholds, using both
+## accumulated and chunked binning strategies. 
+##
+## Inputs:
+##   - MI matrix (gene x gene, with MI values)
+##   - Gene annotation file (from BioMart)
+##
+## Outputs:
+##   - Fraction tables for intra/inter interactions in 1k-sized bins (TSV)
+##   - Fraction tables for intra/inter interactions in log-sized bins (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

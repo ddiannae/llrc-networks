@@ -1,8 +1,18 @@
 ################################################################################
-## Script to get network communities using an specific algorithm specified in
-## the params. It gets a membership file and a file with community features.
-## It requires interactions and vertices files from networkTables.R as input
-###############################################################################
+## This script identifies network communities using a specified algorithm (e.g.,
+## Infomap, Louvain, Fast Greedy, Leading Eigenvector) as set in the workflow
+## parameters. It outputs a membership file and a file with community features.
+## Requires as input the interactions and vertices tables from networkTables.R.
+##
+## Inputs:
+##   - Interactions table (from networkTables.R)
+##   - Vertices table (from networkTables.R)
+##   - Community detection algorithm and type (from Snakemake params)
+##
+## Outputs:
+##   - Community membership table (TSV)
+##   - Community features table (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

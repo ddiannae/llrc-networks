@@ -1,8 +1,15 @@
-## #############################################################
-## This script plots the intra-chromosomal fractions for cancer
-## and normal tissue at different MI values thresholds.
-## Input comes from the intraInterCount.R script
-################################################################
+################################################################################
+## This script plots the intra-chromosomal interaction fractions for cancer and
+## normal tissue across different Mutual Information (MI) thresholds. 
+##
+## Inputs:
+##   - Fraction tables for intra/inter interactions in bins (from intraInterCount.R)
+##   - Tissue name (for plot titles)
+##   - Bin type (onek or log)
+##
+## Outputs:
+##   - PNG plot of intra-chromosomal fraction vs. total interactions
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

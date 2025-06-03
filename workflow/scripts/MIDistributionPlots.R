@@ -1,8 +1,19 @@
 ################################################################################
-## Script to get a density plot and a boxplot for the distribution of the MI
-## values from cancer and normal networks
-## It requires interactions files from networkTables.R as input
-###############################################################################
+## This script generates density and box plots to visualize the distribution of
+## Mutual Information (MI) values from gene interaction networks in cancer and
+## normal conditions. It requires as input the interactions tables produced by
+## networkTables.R for both cancer and normal samples.
+##
+## Inputs:
+##   - Interactions table for normal network (from networkTables.R)
+##   - Interactions table for cancer network (from networkTables.R)
+##   - Tissue name (for plot titles)
+##
+## Outputs:
+##   - Density plot of MI values (PNG)
+##   - Boxplot of MI values by condition (PNG)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

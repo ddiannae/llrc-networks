@@ -1,8 +1,16 @@
 ################################################################################
-## Script to get interactions and vertices tables to build networks of a 
-## top MI cutoff. The annotations are added from a biomart file 
-## It requires the mi matrix as input.
-###############################################################################
+## This script generates interaction and vertex tables for gene networks based on
+## the top MI (Mutual Information) cutoff. It annotates interactions using a 
+## BioMart-derived annotation file. The script expects as input:
+##   - An MI matrix (gene x gene, with MI values)
+##   - A gene annotation file (from BioMart)
+##   - Parameters for MI cutoff and condition (from Snakemake)
+##
+## Output:
+##   - Interactions table: Top MI gene pairs with annotations and distances
+##   - Vertices table: Unique genes with annotation details
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

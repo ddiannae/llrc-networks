@@ -11,6 +11,7 @@ rule get_network_plots_output:
     shell:
         "echo done > {output}"
 
+# Get normal only, cancer only and shared interactions and vertices
 rule get_cancer_normal_interaction:
     input:
         inter_normal=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/normal-interactions-{cutoff}.tsv",
@@ -29,6 +30,7 @@ rule get_cancer_normal_interaction:
     script:
         "../scripts/networksComparison.R"
 
+# Get plots for communities statistics
 rule get_comms_plots:
     input:
         comm_info_normal=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/communities/normal-comm-info-{ctype}-{commalg}-{cutoff}.tsv",
@@ -41,7 +43,8 @@ rule get_comms_plots:
         config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/log/communities_{ctype}_{commalg}_{cutoff}_plots.log"
     script:
         "../scripts/communitiesStatsPlots.R"
-   
+
+# Get a network of network communities   
 rule get_comms_net:
     input:
         interactions=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/{cond}-interactions-{cutoff}.tsv",
@@ -57,6 +60,7 @@ rule get_comms_net:
     script:
         "../scripts/communitiesNetwork.R"
 
+# Get networks communities using an specified algorithm
 rule get_comms:
     input:
         interactions=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/{cond}-interactions-{cutoff}.tsv",
@@ -72,6 +76,7 @@ rule get_comms:
     script:
         "../scripts/communities.R"
 
+# Get degree distribution plots for normal and cancer networks
 rule get_degree_distribution_plots:
     input:
         network_normal=config["datadir"]+"/{tissue}/rdata/normal_"+config["netdir"]+"_"+config["data_format"]+"_{cutoff}.RData",
@@ -86,6 +91,7 @@ rule get_degree_distribution_plots:
     script:
         "../scripts/degreeDistributionPlots.R"
 
+# Get network statistics: network, node attributes, edge attributes
 rule get_network_stats:
     input:
         interactions=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/{cond}-interactions-{cutoff}.tsv",
@@ -100,6 +106,7 @@ rule get_network_stats:
     script:
         "../scripts/networkStats.R"
 
+# Get density and boxplot plots for mutual information distributions in normal and cancer networks
 rule get_distribution_plots:
     input:
         normal=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/normal-interactions-{cutoff}.tsv",
@@ -114,6 +121,7 @@ rule get_distribution_plots:
     script:
         "../scripts/MIDistributionPlots.R"
 
+# Get the mutual information network: interactions and vertices
 rule get_network_tables:
     input:
         mi_matrix=get_mi_matrix,

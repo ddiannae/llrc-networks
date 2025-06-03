@@ -1,3 +1,4 @@
+
 rule get_intra_inter_plots:
     input:
         config["datadir"]+"/{tissue}/"+get_fig_dir()+"/intra-inter-count-onek-bins.png",
@@ -11,6 +12,7 @@ rule get_intra_inter_plots:
     shell:
         "echo done > {output}"
 
+# Gets Kolmogorov-Smirnov test results for intra-chromosomal interactions
 rule get_intra_inter_ks:
     input:
         normal=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-intra-inter-count-{bintype}-{bc}.tsv",
@@ -23,6 +25,7 @@ rule get_intra_inter_ks:
     script:
         "../scripts/intraInterKS.R"
 
+# Gets plots for intra- and inter- chromosomal interactions
 rule get_intra_plot:
     input:
         normal=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-intra-inter-count-{bintype}-{bc}.tsv",
@@ -37,6 +40,7 @@ rule get_intra_plot:
     script:
         "../scripts/intraInterPlot.R"
 
+# Gets counts for intra- and inter- chromosomal interactions
 rule get_intra_inter_count:
     input:
         mi_matrix=get_mi_matrix
