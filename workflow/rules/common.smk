@@ -9,11 +9,6 @@ def get_output_files(wildcards):
             files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/network-plots-{config["cutoff"]}.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-plots.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-inter-plots.txt')
-			for j in ["CD31", "CD10", "EPCAM", "CD45"]:
-    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/cancer_{j}_10000_vertices.tsv')
-    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/normal_{j}_10000_vertices.tsv')
-    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/cancer_{j}_100000_vertices.tsv')
-    	        files.append(f'{config["datadir"]}/{t}/{config["immune"]}/normal_{j}_100000_vertices.tsv')
     return files
 
 def get_dist_dir():

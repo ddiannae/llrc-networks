@@ -1,11 +1,3 @@
-rule setup_immune_log:
-    output:
-        config["datadir"]+"/{tissue}/"+config["immune"]+"/log/done.txt"
-    shell:
-        """
-        touch {output}
-        """
-
 rule setup_distance_log:
     output:
         config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/done.txt"
