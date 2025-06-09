@@ -1,12 +1,18 @@
-## #############################################################
-## This file gets the min mean, median, max, and sd for MI 
-## and distance values per bin, according to the BINSIZE and 
-## BINTYPE variables. Bins are sorted according to the distance 
-## between genes and they can group an amount of intra-interactions 
-## (BINTYPE = size) or windows with a maximum distance 
-## (BINTYPE = distance) per chromosome and in total. 
-## Its input comes from the intraInteractions.R script
-################################################################
+################################################################################
+## This script calculates summary statistics (min, mean, median, max, sd) for
+## MI and distance values per bin, according to the BINSIZE and BINTYPE variables.
+## Bins are defined either by the number of intra-chromosomal interactions
+## (BINTYPE = "size") or by genomic distance windows (BINTYPE = "distance"),
+## per chromosome and for all chromosomes combined. Input comes from intraInteractions.R.
+##
+## Inputs:
+##   - Table of intra-chromosomal interactions with distances (from intraInteractions.R)
+##   - BINSIZE and BINTYPE parameters (from Snakemake)
+##
+## Outputs:
+##   - Per-chromosome bin statistics table (TSV)
+##   - All-chromosomes bin statistics table (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

@@ -1,3 +1,22 @@
+################################################################################
+## This script calculates assortativity values for network communities based on
+## chromosomal location and gene expression. For each community, it computes
+## chromosomal assortativity, and for cancer networks, also computes expression
+## and differential expression assortativity. 
+##
+## Inputs:
+##   - Interactions table (from networkTables.R)
+##   - Vertices table (from networkTables.R)
+##   - Expression table (with log2FC and baseMean)
+##   - Community membership table
+##   - Condition (normal or cancer; from Snakemake params)
+##
+## Outputs:
+##   - Chromosomal assortativity table (TSV)
+##   - Expression assortativity table (TSV, cancer only)
+##   - Differential expression summary table (TSV, cancer only)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

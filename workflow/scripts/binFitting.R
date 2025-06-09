@@ -1,8 +1,14 @@
-## #############################################################
-## This file fits a loess curve to the mean, min, and max values
-## per bin to improve visualization 
-## Its input comes from the binStats.R script
-################################################################
+################################################################################
+## This script fits loess curves to the mean, min, and max MI values per bin,
+## to improve visualization of trends in binned MI statistics.
+## Input comes from binStats.R.
+##
+## Inputs:
+##   - Bin statistics tables for normal and cancer (from binStats.R)
+##
+## Outputs:
+##   - Table with original and loess-fitted MI statistics per bin (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

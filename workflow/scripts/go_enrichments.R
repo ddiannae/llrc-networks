@@ -1,3 +1,17 @@
+################################################################################
+## This script performs functional enrichment analysis for network communities
+## using Gene Ontology (GO) Biological Process terms via clusterProfiler. For
+## each community with at least 5 genes, enriched GO terms are identified and
+## simplified, and results are written to output.
+##
+## Inputs:
+##   - Community membership table (with Ensembl gene IDs)
+##   - Gene universe table (with Ensembl gene IDs)
+##
+## Outputs:
+##   - Table of enriched GO terms for each community (TSV)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

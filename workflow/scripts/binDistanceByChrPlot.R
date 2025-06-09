@@ -1,8 +1,17 @@
-## #############################################################
-## This file builds a scatter plot for the bin mean MI vs distance  
-## and draws a loess fitted line per chromosome.
-## Its input comes from the binFittingByChr.R and binStats.R script
-################################################################
+################################################################################
+## This script builds scatter plots of bin mean MI vs. mean distance for each
+## chromosome, overlaying loess-fitted lines to visualize trends. Plots are
+## faceted by chromosome and condition (normal/cancer). Input comes from
+## binFittingByChr.R (loess fits) and binStats.R (bin statistics).
+##
+## Inputs:
+##   - Per-chromosome bin statistics tables for normal and cancer (from binStats.R)
+##   - Table with loess-fitted MI statistics per bin and chromosome (from binFittingByChr.R)
+##   - Tissue name (for plot titles)
+##
+## Outputs:
+##   - PNG plot of mean MI vs. distance per bin, faceted by chromosome and condition
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

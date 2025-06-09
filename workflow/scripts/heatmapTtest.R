@@ -1,9 +1,15 @@
-## #############################################################
-## This file builds a normal and cancer heatmap of the p-values 
-## from the wilcoxon tests that compare mi distributions of bins  
-## in a single condition. 
-## Its input comes from the binTest.R script
-################################################################
+################################################################################
+## This script creates heatmaps of p-values from Wilcoxon test results from 
+## binTest.R, for normal and cancer conditions.
+##
+## Inputs:
+##   - Table of Wilcoxon test results for normal (from binTest.R)
+##   - Table of Wilcoxon test results for cancer (from binTest.R)
+##   - Tissue name (for plot titles)
+##
+## Outputs:
+##   - PNG file with heatmaps of p-values for normal and cancer conditions
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

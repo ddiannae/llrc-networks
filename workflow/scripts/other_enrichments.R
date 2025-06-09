@@ -1,3 +1,18 @@
+################################################################################
+## This script performs functional enrichment analysis for network communities
+## using clusterProfiler. It supports KEGG, oncogenic signatures (MSigDB C6), or
+## Network of Cancer Genes (NCG) enrichment, as specified by workflow parameters.
+## For each community, enriched terms are identified and written to output.
+##
+## Inputs:
+##   - Community membership table (with gene IDs)
+##   - Gene universe table
+##   - Enrichment type (kegg, onco, or ncg; from Snakemake params)
+##
+## Outputs:
+##   - Table of enriched terms for each community (TSV)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
@@ -69,20 +84,15 @@ if(etype == "kegg") {
 
 all_enrichments <- lapply(X = unique(membership$community),
                           FUN = function(com){
-                            
         cat("Working with community: ", com, "\n")
 
         gene_list <- membership %>% filter(community == com) %>%
                              pull(entrez)
-        
         if(length(gene_list) >= 5) {
-          
           terms <- enrich_function(gene_list, gene_universe_entrez)
-          
           if(nrow(as.data.frame(terms)) > 0) {
             terms_df <- as.data.frame(terms)
             terms_df$commun <- com 
-            
             return(terms_df)  
           }
         }

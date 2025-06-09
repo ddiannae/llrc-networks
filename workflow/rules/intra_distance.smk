@@ -7,12 +7,13 @@ rule get_distance_plots:
         config["datadir"]+"/{tissue}/"+get_fig_dir()+"/bin-size-"+str(config["sizebin"])+"-mean_fitted.png",
         config["datadir"]+"/{tissue}/"+get_fig_dir()+"/bin-size-bychr-"+str(config["sizebin"])+".png",
         config["datadir"]+"/{tissue}/"+get_fig_dir()+"/bin-distance-bychr-"+str(config["distbin"])+".png",
-        # config["datadir"]+"/{tissue}/"+get_fig_dir()+"/heatmap-bins-size-all-ttests-"+str(config["sizebin"])+".png",
+        config["datadir"]+"/{tissue}/"+get_fig_dir()+"/heatmap-bins-size-all-ttests-"+str(config["sizebin"])+".png",
     output:
         config["datadir"]+"/{tissue}/"+get_fig_dir()+"/intra-plots.txt"
     shell:
         "echo done > {output}"
 
+# Gets plots for intra-chromosomal bins for all chromosomes 
 rule get_bin_distance_plots:
     input:
         config["datadir"]+"/{tissue}/"+get_dist_dir()+"/fitted-bins-{bintype}-all-{binsize}.tsv"
@@ -26,6 +27,7 @@ rule get_bin_distance_plots:
     script:
         "../scripts/binDistancePlot.R"
 
+# Gets loess fitted intra-chromosomal values for mix, max and mean bin values for all chromosomes
 rule get_bin_fitted:
     input:
         cancer=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-bins-{bintype}-all-{binsize}.tsv",
@@ -37,6 +39,7 @@ rule get_bin_fitted:
     script:
         "../scripts/binFitting.R"
 
+# Gets plots for intra-chromosomal bins by chromosome
 rule get_bin_chr_plots:
     input:
         cancer=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-bins-{bintype}-bychr-{binsize}.tsv",
@@ -51,6 +54,7 @@ rule get_bin_chr_plots:
     script:
         "../scripts/binDistanceByChrPlot.R"
 
+# Gets loess fitted intra-chromosomal values for mix, max and mean bin values by chromosome
 rule get_bin_chr_fitted:
     input:
         cancer=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-bins-{bintype}-bychr-{binsize}.tsv",
@@ -62,6 +66,7 @@ rule get_bin_chr_fitted:
     script:
         "../scripts/binFittingByChr.R"
 
+# Plots t-test results for intra-chromosomal bins in heatmaps
 rule get_ttest_heatmap:
     input:
         cancer=config["datadir"]+"/{tissue}/"+get_dist_dir()+"/cancer-bins-{bintype}-all-tests-{binsize}.tsv",
@@ -76,6 +81,7 @@ rule get_ttest_heatmap:
     script:
       "../scripts/heatmapTtest.R"
 
+# Performs wilcoxon tests for intra-chromosomal bins
 rule get_bins_tests:
     input:
         config["datadir"]+"/{tissue}/"+get_dist_dir()+"/{cond}-all-distance-mi.tsv"
@@ -91,6 +97,7 @@ rule get_bins_tests:
     script:
       "../scripts/binTest.R"
 
+# Gets intra-chromosomal bins statistics for a given tissue
 rule get_bins:
     input:
         config["datadir"]+"/{tissue}/"+get_dist_dir()+"/{cond}-all-distance-mi.tsv"
@@ -107,6 +114,7 @@ rule get_bins:
     script:
       "../scripts/binStats.R"
 
+# Extra intra-chromosomal interactions adding gene-pair distance
 rule get_intra_interactions:
     input:
         mi_matrix=get_mi_matrix,

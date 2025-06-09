@@ -7,6 +7,7 @@ rule done_assortativity_plots:
     shell:
         "echo done > {output}"
 
+# Gets assortativity plots for communities in a tissue
 rule get_assortativities_plot:
     input:
         chr_assortativity=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/assortativity/{cond}-chr-assortativity-{cutoff}.tsv",
@@ -25,6 +26,7 @@ rule get_assortativities_plot:
     script:
         "../scripts/assortativityEnrichmentPlot.R"
 
+# Gets expression and chromosomal assortativity values for communities in a tissue
 rule get_assortativities:
     input:
         interactions=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/{cond}-interactions-{cutoff}.tsv",

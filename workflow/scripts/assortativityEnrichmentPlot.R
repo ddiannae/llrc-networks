@@ -1,3 +1,24 @@
+################################################################################
+## This script creates plots to visualize chromosomal and expression assortativity
+## values for network communities, along with community enrichment information.
+## For cancer networks, both chromosomal and expression assortativity are shown;
+## for normal networks, only chromosomal assortativity is plotted. Community size,
+## mean log fold change, and number of enriched terms are also displayed.
+##
+## Inputs:
+##   - Chromosomal assortativity table (from communitiesAssortativity.R)
+##   - Expression assortativity table (from communitiesAssortativity.R, cancer only)
+##   - Community summary table (from communities.R)
+##   - Vertices table (from networkTables.R)
+##   - Enrichment results table
+##   - Condition (normal or cancer; from Snakemake params)
+##   - Tissue name (for plot titles)
+##
+## Outputs:
+##   - PNG plot of community assortativity and enrichment
+##   - Community summary table (TSV)
+################################################################################
+
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")

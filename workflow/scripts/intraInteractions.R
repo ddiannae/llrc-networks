@@ -1,8 +1,16 @@
-## #############################################################
-## This file filters the intra-chromosomal interactions and
-## gets the distance in base pairs between each pair of genes
-## Its input comes from the MI matrix.
-################################################################
+################################################################################
+## This script filters intra-chromosomal interactions from the MI matrix and
+## calculates the distance in base pairs between each pair of genes. It annotates
+## each interaction with chromosome and position information using a BioMart-derived
+## annotation file.
+##
+## Inputs:
+##   - MI matrix (gene x gene, with MI values)
+##   - Gene annotation file (from BioMart)
+##
+## Outputs:
+##   - Table of intra-chromosomal interactions with distances (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)

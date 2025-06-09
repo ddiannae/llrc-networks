@@ -7,6 +7,7 @@ rule get_all_enrichments:
     shell:
         "echo done > {output}"
 
+# Gets KEGG and oncogenic gene sets (C6) enrichments for all communities in a tissue
 rule get_other_enrichments:
     input:
         membership=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/communities/{cond}-comm-{ctype}-louvain-{cutoff}.tsv",
@@ -20,6 +21,7 @@ rule get_other_enrichments:
     script:
         "../scripts/other_enrichments.R"
 
+# Gets Gene Ontology (GO) enrichments for all communities in a tissue
 rule get_go_enrichments:
     input:
         membership=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/communities/{cond}-comm-{ctype}-louvain-{cutoff}.tsv",

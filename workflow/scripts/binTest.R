@@ -1,8 +1,17 @@
-## #############################################################
-## This file performs wilcox.test between mi distributions from 
-## pairs of bins in asingle condition. 
-## Its input comes from the binStats.R script
-################################################################
+################################################################################
+## This script performs pairwise Wilcoxon tests (wilcox.test) between MI
+## distributions from all pairs of bins within a single condition. Bins are
+## defined by the parameters in binStats.R. The input is the binned intra-
+## chromosomal interaction data, and the output is a table of test results.
+##
+## Inputs:
+##   - Binned intra-chromosomal interactions table (from binStats.R)
+##   - BINSIZE and BINTYPE parameters (from Snakemake)
+##   - Condition (from Snakemake)
+##
+## Outputs:
+##   - Table of Wilcoxon test results for all bin pairs (TSV)
+################################################################################
 
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
