@@ -4,7 +4,7 @@
 
 This repository contains a Snakemake-based workflow for constructing and analysing gene co-expression networks from mutual information (MI) matrices. The workflow is designed to compare cancer and normal tissue networks, identify network communities, perform functional enrichment, and generate a variety of summary statistics and plots.
 
-The input for this workflow comes from the results from [RNA-Seq pipeline for TCGA and Toil Xena datasets](https://github.com/ddiannae/llrc-pipeline)
+The input for this workflow comes from the results from [RNA-Seq pipeline for TCGA and USCS Xena datasets](https://github.com/ddiannae/llrc-pipeline)
 
 ## Overview
 
