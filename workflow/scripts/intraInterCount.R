@@ -41,15 +41,29 @@ MImatrix[is.na(MImatrix)] <- 0
 MImatrix[lower.tri(MImatrix, diag = T)] <- NA
 
 genes <- colnames(MImatrix)
-MImatrix <- as_tibble(MImatrix)
-MImatrix$source <- genes
 
 cat("Annotating interactions\n")
-mi_vals <- MImatrix %>% pivot_longer(cols = starts_with("ENSG"), 
-                                  names_to = "target",
-                                  values_to = "mi", 
-                                  values_drop_na = TRUE) %>% 
-  arrange(desc(mi))  %>%  
+
+#Extratct upper triangle indices and MI values without pivot_longer
+upper_indices <- which(
+       upper.tri(as.matrix(MImatrix[, -ncol(MImatrix)])),
+       arr.ind = TRUE
+)
+
+# Create a tibble with source, target, and MI values directly
+mi_vals <- tibble(
+       source = genes[upper_indices[, 1]],
+       target = genes[upper_indices[, 2]],
+       mi = MImatrix[upper_indices]
+       ) 
+cat("Done building tibble\n")
+rm(MImatrix)
+cat("Done deleting matrix\n")
+mi_vals <- mi_vals |>
+  arrange(desc(mi))    
+cat("Done arrenging mi vals\n")
+
+mi_vals <- mi_vals |>
   left_join(annot %>% dplyr::select(ensembl_id, chr), 
                                  by = c("source" = "ensembl_id"), multiple = "first") %>% 
   rename("source_chr" = "chr") %>%
@@ -59,22 +73,28 @@ mi_vals <- MImatrix %>% pivot_longer(cols = starts_with("ENSG"),
   mutate(interaction = ifelse(source_chr == target_chr, "intra", "inter"),
          nrow = row_number())
 
-rm(MImatrix)
-cat("Saving onek bins\n")
+cat("Creating onek and log chunks\n")
 ### bins by a thousand interactions
 
 onek_chunks <- mi_vals %>%  
-  mutate(bin = floor((nrow-1)/1000)) %>%
+  mutate(bin = floor((nrow-1)/1000))
+
+cat("Getting chunks\n")
+onek_chunks <- onek_chunks |>
   group_by(bin) %>%
   count(interaction) %>% 
   pivot_wider(id_cols = bin, names_from = interaction, values_from = n, 
-              values_fill = 0) %>%
+              values_fill = 0)
+
+cat("Saving chunks\n")
+onek_chunks <- onek_chunks |>
   mutate(inter_fraction = round(inter/(intra+inter), 4),
          intra_fraction = round(intra/(intra+inter), 4),
          cond = COND) %>%
   ungroup() %T>% 
   vroom_write(file = snakemake@output[["onek_chunks"]])
 
+cat("Saving bins\n")
 bins <- unique(onek_chunks$bin)
 names(bins) <- unique(onek_chunks$bin)
 
@@ -88,11 +108,23 @@ furrr::future_map_dfr(bins, ~ onek_chunks %>%
          cond = COND) %>%
   vroom_write(file = snakemake@output[["onek_bins"]])
 
+rm(onek_chunks)
 
-cat("Saving log bins\n")
-log_chunks <- mi_vals %>% mutate(bin_size = 10^floor(log10(nrow))) %>%
-  mutate(bin_size = ifelse(bin_size < 1000, 1000, bin_size),
-         bin = (floor((nrow-1)/bin_size)+1)*bin_size) %>% 
+cat("Getting log chunks\n")
+log_chunks <- mi_vals %>%
+  mutate(bin_size = 10^floor(log10(nrow)))
+
+cat("Deleting mi_vals\n")
+
+rm(mi_vals)
+
+log_chunks <- log_chunks |>
+  	mutate(bin_size = ifelse(bin_size < 1000, 1000, bin_size))
+log_chunks <- log_chunks |>
+         mutate(bin = (floor((nrow-1)/bin_size)+1)*bin_size) 
+
+cat("Saving log chunks\n")
+log_chunks <- log_chunks |>
   group_by(bin) %>%
   count(interaction) %>% 
   pivot_wider(id_cols = bin, names_from = interaction, values_from = n, 
@@ -106,6 +138,7 @@ log_chunks <- mi_vals %>% mutate(bin_size = 10^floor(log10(nrow))) %>%
 bins <- unique(log_chunks$bin)
 names(bins) <- unique(log_chunks$bin)
 
+cat("Saving log bins\n")
 furrr::future_map_dfr(bins, ~ log_chunks %>% 
                         filter(bin <= .x) %>% 
                         select(intra, inter) %>% colSums(),
