@@ -34,7 +34,7 @@ rule get_assortativities:
         membership=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/communities/{cond}-comm-all-louvain-{cutoff}.tsv",
         expression=config["datadir"]+"/{tissue}/deg/deg_results.tsv"
     output:
-    	chr_assortativity=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/assortativity/{cond}-chr-assortativity-{cutoff}.tsv",
+        chr_assortativity=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/assortativity/{cond}-chr-assortativity-{cutoff}.tsv",
         expr_assortativity=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/assortativity/{cond}-expr-assortativity-{cutoff}.tsv",
         diff_expr_summary=config["datadir"]+"/{tissue}/"+config["netdir"]+"_"+config["data_format"]+"/assortativity/{cond}-diff-expr-summary-{cutoff}.tsv",
     params:
