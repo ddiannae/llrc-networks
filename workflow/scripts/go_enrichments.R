@@ -1,22 +1,8 @@
-################################################################################
-## This script performs functional enrichment analysis for network communities
-## using Gene Ontology (GO) Biological Process terms via clusterProfiler. For
-## each community with at least 5 genes, enriched GO terms are identified and
-## simplified, and results are written to output.
-##
-## Inputs:
-##   - Community membership table (with Ensembl gene IDs)
-##   - Gene universe table (with Ensembl gene IDs)
-##
-## Outputs:
-##   - Table of enriched GO terms for each community (TSV)
-################################################################################
-
 log <- file(snakemake@log[[1]], open="wt")
 sink(log)
 sink(log, type="message")
 
-library(readr)
+library(vroom)
 library(dplyr)
 library(tidyr)
 library(org.Hs.eg.db)
@@ -25,20 +11,20 @@ library(enrichplot)
 
 cat("Reading files\n")
 
-membership <- read_tsv(file=snakemake@input[["membership"]])
-gene_universe <- read_tsv(file=snakemake@input[["universe"]], col_names = c("ensembl_id")) 
+mem <- vroom(file=snakemake@input[["membership"]])
+gene_universe <- vroom(file=snakemake@input[["universe"]], col_select = "name")
 
-gene_universe <- gene_universe %>% 
-  separate(col = ensembl_id, into = c("ensembl_id", "version"), sep = "\\.") %>%
-  pull(ensembl_id)
+gene_universe <- gene_universe |>
+  pull(name)
 
-all_enrichments <- lapply(X = unique(membership$community),
+all_enrichments <- lapply(X = unique(mem$community),
                           FUN = function(com){
 			
 		cat("Working with community: ", com, "\n")
 
-    gene_list <- membership %>% filter(community == com) %>%
-                        pull(ensembl_id)
+    gene_list <- mem |>
+      filter(community == com) |>
+      pull(name)
     
     if(length(gene_list) >= 5) {
       
@@ -69,6 +55,6 @@ all_enrichments <- lapply(X = unique(membership$community),
     return(NULL)
 })
 
-bind_rows(all_enrichments) %>% 
-  janitor::clean_names() %>%
-  write_tsv(snakemake@output[[1]])
+bind_rows(all_enrichments) |>
+  janitor::clean_names() |>
+  vroom_write(snakemake@output[[1]])
