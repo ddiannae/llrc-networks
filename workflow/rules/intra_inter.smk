@@ -58,3 +58,19 @@ rule get_intra_inter_count:
     script:
         "../scripts/intraInterCount.R"
 
+rule get_intra_inter_count_bootstrp:
+    input:
+        mi_matrix=get_mi_matrix_boot
+    output:
+        onek_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-onek-chunks-{n}.tsv",
+        onek_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-onek-bins-{n}.tsv",
+        log_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-bins-{n}.tsv",
+        log_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-chunks-{n}.tsv"
+    params:
+        cond="{cond}",
+        annot=config["datadir"]+"/{tissue}/rdata/annot.RData"
+    threads: 18
+    log:
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_get_intra_inter_count_{n}.log" 
+    script:
+        "../scripts/intraInterCount.R"

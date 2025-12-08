@@ -9,6 +9,9 @@ def get_output_files(wildcards):
             files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/network-plots-{config["cutoff"]}.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-plots.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-inter-plots.txt')
+            for n in range(1, 10):
+                files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/cancer-intra-inter-count-log-chunks-{n}.tsv')
+
     return files
 
 def get_dist_dir():
@@ -19,6 +22,9 @@ def get_fig_dir():
 
 def get_mi_matrix(wildcards):
     return f'{config["datadir"]}/{wildcards.tissue}/correlation/{config["data_format"]}_ensembl_{wildcards.cond}.adj'
+
+def get_mi_matrix_boot(wildcards):
+    return f'{config["datadir"]}/{wildcards.tissue}/correlation/bootstrap_samples/aracne_{wildcards.cond}_bootstrap_{wildcards.n}.adj'
 
 def getGeneUniverse(wildcards):
     if config["data_format"] == "tpm" or config["data_format"] == "arsyn_tpm":
