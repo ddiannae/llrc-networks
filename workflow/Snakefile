@@ -1,8 +1,8 @@
     ## Configfile
 configfile: "config/config.yaml"
 
-include: "rules/setup.smk"
 include: "rules/common.smk"
+include: "rules/setup.smk"
 include: "rules/intra_inter.smk"
 include: "rules/intra_distance.smk"
 include: "rules/network.smk"

@@ -35,15 +35,27 @@ MImatrix <- MImatrix %>%
 MImatrix[is.na(MImatrix)] <- 0
 MImatrix[lower.tri(MImatrix, diag = T)] <- NA
 
-MImatrix <- as_tibble(MImatrix)
-MImatrix$source <- genes
+genes <- colnames(MImatrix)
 
 cat("Annotating interactions\n")
-MIvals <- MImatrix %>% pivot_longer(cols = starts_with("ENSG"), 
-                                     names_to = "target",
-                                     values_to = "mi",
-                                     values_drop_na = TRUE) %>% 
-  filter(source != target) %>%
+
+#Extratct upper triangle indices and MI values without pivot_longer
+upper_indices <- which(
+       upper.tri(as.matrix(MImatrix[, -ncol(MImatrix)])),
+       arr.ind = TRUE
+)
+
+cat("Annotating interactions\n")
+MIvals <- tibble(
+       source = genes[upper_indices[, 1]],
+       target = genes[upper_indices[, 2]],
+       mi = MImatrix[upper_indices])
+
+cat("Done building tibble\n")
+rm(MImatrix)
+
+MIvals <- MIvals |>
+ filter(source != target) %>%
   arrange(desc(mi)) %>% 
   mutate(row_num = row_number()) %>% 
   filter(row_num <= CUTOFF)
