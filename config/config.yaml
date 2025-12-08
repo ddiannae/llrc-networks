@@ -1,7 +1,7 @@
 # Cutoff for top MI interactions
 cutoff: 100000
 # Path to the input data
-datadir: /datos/ot/diana/llrc
+datadir: /mnt/disks/llrc/data
 # Name for distance analysis results folder
 distdir: distance_analysis
 # Name for distance plots folder
@@ -15,8 +15,9 @@ distbin: 100000
 # Size of the size bins (in number of gene-gene interactions)
 sizebin: 1000
 # list of tissues to analyze
-tissues: ["bladder", "brain", "breast", "colon", "esophagus", "kidney", "liver", "lung", "ovary", "pancreas", "prostate", "testis", "thyroid", "uterus", "skin"]
+#tissues: ["bladder", "colon", "esophagus", "thyroid", "uterus"]
+tissues: ["colon"]
 # Path to biomart file to get gene regions
-biomart: /home/dgarcia/Workspace/distance-analysis/input/Biomart_Ensembl80_GRCh38_p2_regions.tsv
+biomart: /home/dgarciac/Workspace/llrc-networks/input/Biomart_Ensembl80_GRCh38_p2_regions.tsv
 # End step for the workflow
 end: "plots"
