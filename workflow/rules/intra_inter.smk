@@ -60,13 +60,11 @@ rule get_intra_inter_count:
 
 rule get_intra_inter_summ_cancer:
     input:
-        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_samples/cancer-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bootrstrap_samples"]))], allow_missing=True)
+        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bsamples"]))], allow_missing=True)
     output:
-        config["datadir"]+"/{tissue}/correlation/bootstrap_samples/cancer-log-bins-summ.tsv"
-    params:
-        bdir=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/"
+        config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-log-bins-summ.tsv"
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/cancer_bootstrap_log_bins_summ.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_bootstrap_log_bins_summ.log" 
     script:
         "../scripts/bootstrapIntraInter.R"
 

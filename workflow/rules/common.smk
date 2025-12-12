@@ -9,7 +9,11 @@ def get_output_files(wildcards):
             files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/network-plots-{config["cutoff"]}.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-plots.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-inter-plots.txt')
-            files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/cancer-log-bins-summ.tsv')
+        elif config["end"] == "boots":
+            if t == "esophagus":
+                files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/normal-log-bins-summ.tsv')
+            else:
+                files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/cancer-log-bins-summ.tsv')
     return files
 
 def get_dist_dir():
