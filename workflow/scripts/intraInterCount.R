@@ -24,6 +24,8 @@ library(ggplot2)
 library(ggthemes)
 library(furrr)
 
+Sys.setenv(VROOM_CONNECTION_SIZE=500072)
+
 MCCORES <- snakemake@threads[[1]]
 future::plan(future::multisession, workers = MCCORES)
 
