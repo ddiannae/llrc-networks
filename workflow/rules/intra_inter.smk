@@ -58,6 +58,18 @@ rule get_intra_inter_count:
     script:
         "../scripts/intraInterCount.R"
 
+rule get_intra_inter_summ_cancer:
+    input:
+        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_samples/cancer-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bootrstrap_samples"]))], allow_missing=True)
+    output:
+        config["datadir"]+"/{tissue}/correlation/bootstrap_samples/cancer-log-bins-summ.tsv"
+    params:
+        bdir=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/"
+    log:
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/cancer_bootstrap_log_bins_summ.log" 
+    script:
+        "../scripts/bootstrapIntraInter.R"
+
 rule get_intra_inter_count_bootstrp:
     input:
         mi_matrix=get_mi_matrix_boot

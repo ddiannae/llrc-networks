@@ -3,3 +3,5 @@ packrat/src/*
 .Rproj.user
 .Rhistory
 .snakemake
+data/*
+figs/*
