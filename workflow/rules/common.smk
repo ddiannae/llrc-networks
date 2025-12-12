@@ -9,9 +9,7 @@ def get_output_files(wildcards):
             files.append(f'{config["datadir"]}/{t}/{config["netdir"]}_{config["data_format"]}_plots/network-plots-{config["cutoff"]}.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-plots.txt')
             files.append(f'{config["datadir"]}/{t}/{get_fig_dir()}/intra-inter-plots.txt')
-            for n in range(1, int(config["bootstrap_samples"])+1):
-                files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/cancer-intra-inter-count-log-chunks-{n}.tsv')
-
+            files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_samples/cancer-log-bins-summ.tsv')
     return files
 
 def get_dist_dir():
