@@ -21,3 +21,4 @@ tissues: ["colon"]
 biomart: /home/dgarciac/Workspace/llrc-networks/input/Biomart_Ensembl80_GRCh38_p2_regions.tsv
 # End step for the workflow
 end: "plots"
+bootstrap_samples: 20
