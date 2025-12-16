@@ -1,7 +1,7 @@
 ################################################################################
 ## This script calculates the fraction of intra-chromosomal and inter-chromosomal
 ## interactions across different Mutual Information (MI) thresholds, using both
-## accumulated and chunked binning strategies. 
+## accumulated and chunked binning strategies.
 ##
 ## Inputs:
 ##   - MI matrix (gene x gene, with MI values)
@@ -36,7 +36,7 @@ cat("Reading matrix\n")
 MImatrix <- vroom::vroom(snakemake@input[["mi_matrix"]])
 COND <- snakemake@params[["cond"]]
 
-MImatrix <- MImatrix %>% 
+MImatrix <- MImatrix %>%
   as.matrix()
 
 MImatrix[is.na(MImatrix)] <- 0
@@ -57,20 +57,20 @@ mi_vals <- tibble(
        source = genes[upper_indices[, 1]],
        target = genes[upper_indices[, 2]],
        mi = MImatrix[upper_indices]
-       ) 
+       )
 cat("Done building tibble\n")
 rm(MImatrix)
 cat("Done deleting matrix\n")
 mi_vals <- mi_vals |>
-  arrange(desc(mi))    
+  arrange(desc(mi))
 cat("Done arrenging mi vals\n")
 
 mi_vals <- mi_vals |>
-  left_join(annot %>% dplyr::select(ensembl_id, chr), 
-                                 by = c("source" = "ensembl_id"), multiple = "first") %>% 
+  left_join(annot %>% dplyr::select(ensembl_id, chr),
+                                 by = c("source" = "ensembl_id"), multiple = "first") %>%
   rename("source_chr" = "chr") %>%
-  left_join(annot %>% dplyr::select(ensembl_id, chr), 
-                                         by = c("target" = "ensembl_id"),  multiple = "first") %>% 
+  left_join(annot %>% dplyr::select(ensembl_id, chr),
+                                         by = c("target" = "ensembl_id"),  multiple = "first") %>%
   rename("target_chr" = "chr") %>%
   mutate(interaction = ifelse(source_chr == target_chr, "intra", "inter"),
          nrow = row_number())
@@ -78,14 +78,14 @@ mi_vals <- mi_vals |>
 cat("Creating onek and log chunks\n")
 ### bins by a thousand interactions
 
-onek_chunks <- mi_vals %>%  
+onek_chunks <- mi_vals %>%
   mutate(bin = floor((nrow-1)/1000))
 
 cat("Getting chunks\n")
 onek_chunks <- onek_chunks |>
   group_by(bin) %>%
-  count(interaction) %>% 
-  pivot_wider(id_cols = bin, names_from = interaction, values_from = n, 
+  count(interaction) %>%
+  pivot_wider(id_cols = bin, names_from = interaction, values_from = n,
               values_fill = 0)
 
 cat("Saving chunks\n")
@@ -93,15 +93,15 @@ onek_chunks <- onek_chunks |>
   mutate(inter_fraction = round(inter/(intra+inter), 4),
          intra_fraction = round(intra/(intra+inter), 4),
          cond = COND) %>%
-  ungroup() %T>% 
+  ungroup() %T>%
   vroom_write(file = snakemake@output[["onek_chunks"]])
 
 cat("Saving bins\n")
 bins <- unique(onek_chunks$bin)
 names(bins) <- unique(onek_chunks$bin)
 
-furrr::future_map_dfr(bins, ~ onek_chunks %>% 
-                        filter(bin <= .x) %>% 
+furrr::future_map_dfr(bins, ~ onek_chunks %>%
+                        filter(bin <= .x) %>%
                         select(intra, inter) %>% colSums(),
                       .id = "bin") %>%
   mutate(bin = as.numeric(bin),
@@ -123,13 +123,13 @@ rm(mi_vals)
 log_chunks <- log_chunks |>
   	mutate(bin_size = ifelse(bin_size < 1000, 1000, bin_size))
 log_chunks <- log_chunks |>
-         mutate(bin = (floor((nrow-1)/bin_size)+1)*bin_size) 
+         mutate(bin = (floor((nrow-1)/bin_size)+1)*bin_size)
 
 cat("Saving log chunks\n")
 log_chunks <- log_chunks |>
   group_by(bin) %>%
-  count(interaction) %>% 
-  pivot_wider(id_cols = bin, names_from = interaction, values_from = n, 
+  count(interaction) %>%
+  pivot_wider(id_cols = bin, names_from = interaction, values_from = n,
               values_fill = 0) %>%
   mutate(inter_fraction = round(inter/(intra+inter), 4),
          intra_fraction = round(intra/(intra+inter), 4),
@@ -141,8 +141,8 @@ bins <- unique(log_chunks$bin)
 names(bins) <- unique(log_chunks$bin)
 
 cat("Saving log bins\n")
-furrr::future_map_dfr(bins, ~ log_chunks %>% 
-                        filter(bin <= .x) %>% 
+furrr::future_map_dfr(bins, ~ log_chunks %>%
+                        filter(bin <= .x) %>%
                         select(intra, inter) %>% colSums(),
                       .id = "bin") %>%
   mutate(bin = as.numeric(bin),
@@ -150,3 +150,8 @@ furrr::future_map_dfr(bins, ~ log_chunks %>%
          intra_fraction = round(intra/(intra+inter), 4),
          cond = COND) %>%
   vroom_write(file = snakemake@output[["log_bins"]])
+
+if(snakemake@params[["del_input"]] == 1){
+  cat("Deleting input MI matrix to save space\n")
+  file.remove(snakemake@input[["mi_matrix"]])
+}

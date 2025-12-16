@@ -21,7 +21,7 @@ rule get_intra_inter_ks:
         config["datadir"]+"/{tissue}/"+get_dist_dir()+"/intra-inter-ks-{bintype}-{bc}.tsv"
     threads: 38
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/intra_inter_ks_{bintype}_{bc}.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/intra_inter_ks_{bintype}_{bc}.log"
     script:
         "../scripts/intraInterKS.R"
 
@@ -36,7 +36,7 @@ rule get_intra_plot:
         bintype="{bintype}",
         tissue="{tissue}"
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/intra_inter_count_{bintype}_{bc}_plot.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/intra_inter_count_{bintype}_{bc}_plot.log"
     script:
         "../scripts/intraInterPlot.R"
 
@@ -54,17 +54,17 @@ rule get_intra_inter_count:
         annot=config["datadir"]+"/{tissue}/rdata/annot.RData"
     threads: 18
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_get_intra_inter_count.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_get_intra_inter_count.log"
     script:
         "../scripts/intraInterCount.R"
 
 rule get_intra_inter_summ_cancer:
     input:
-        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bsamples"]))], allow_missing=True)
+        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bsamples"]))], allow_missing=True)
     output:
-        config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-log-bins-summ.tsv"
+        config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-log-bins-summ.tsv"
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_bootstrap_log_bins_summ.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_bootstrap_log_bins_summ_{s}.log"
     script:
         "../scripts/bootstrapIntraInter.R"
 
@@ -72,15 +72,16 @@ rule get_intra_inter_count_bootstrp:
     input:
         mi_matrix=get_mi_matrix_boot
     output:
-        onek_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-onek-chunks-{n}.tsv",
-        onek_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-onek-bins-{n}.tsv",
-        log_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-bins-{n}.tsv",
-        log_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-chunks-{n}.tsv"
+        onek_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-intra-inter-count-onek-chunks-{n}.tsv",
+        onek_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-intra-inter-count-onek-bins-{n}.tsv",
+        log_bins=config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-intra-inter-count-log-bins-{n}.tsv",
+        log_chunks=config["datadir"]+"/{tissue}/correlation/bootstrap_spearman_{s}/{cond}-intra-inter-count-log-chunks-{n}.tsv"
     params:
         cond="{cond}",
-        annot=config["datadir"]+"/{tissue}/rdata/annot.RData"
-    threads: 18
+        annot=config["datadir"]+"/{tissue}/annot.RData",
+        del_input=1
+    threads: 5
     log:
-        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_get_intra_inter_count_{n}.log" 
+        config["datadir"]+"/{tissue}/"+get_dist_dir()+"/log/{cond}_get_intra_inter_count_{n}_{s}.log"
     script:
         "../scripts/intraInterCount.R"

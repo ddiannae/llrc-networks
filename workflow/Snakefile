@@ -8,10 +8,12 @@ include: "rules/intra_distance.smk"
 include: "rules/network.smk"
 include: "rules/enrichment.smk"
 include: "rules/assortativity.smk"
+include: "rules/other_nets.smk"
+include: "rules/tfs.smk"
 
 wildcard_constraints:
     cutoff="\d+",
-    cond="normal|cancer",
+    cond="normal|cancer|cases",
     bintype="size|distance|log|onek",
     binsize="\d+",
     ctype="intra|all",

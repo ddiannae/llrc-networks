@@ -29,14 +29,14 @@ getComInfo <- function(cmembership, network){
   comp.info <- lapply(unique(cmembership), function(idc){
     mem <- names(cmembership[cmembership == idc])
     com <- induced.subgraph(network, mem)
-    intras <- igraph::as_data_frame(com, what = "edges") %>% 
+    intras <- igraph::as_data_frame(com, what = "edges") %>%
       filter(interaction_type == "Intra") %>% nrow()
     prs <- page.rank(com)
     chrs <- table(V(com)$chr)
     edges <- length(E(com))
     return(data.frame(com_id = idc,
-                      pg_gene = names(which.max(prs$vector))[1], 
-                      chr = names(which.max(chrs))[1], order = length(V(com)), 
+                      pg_gene = names(which.max(prs$vector))[1],
+                      chr = names(which.max(chrs))[1], order = length(V(com)),
                       size = edges,
                       intra_fraction = intras/edges))
   })
@@ -47,22 +47,24 @@ getComInfo <- function(cmembership, network){
 }
 
 cat("Reading files\n")
-interactions <- read_tsv(snakemake@input[["interactions"]])  %>% 
+interactions <- read_tsv(snakemake@input[["interactions"]])  %>%
   dplyr::rename("from" = "source", "to" = "target",
-                "weight" = "mi")
+                "weight" = "mi") |>
+  dplyr::select(from, to, weight, everything())
 
-vertices <- read_tsv(snakemake@input[["vertices"]]) %>% 
-  dplyr::rename("name" = "ensembl_id")
+vertices <- read_tsv(snakemake@input[["vertices"]]) %>%
+  dplyr::rename("name" = "ensembl_id") |>
+  dplyr::select(name, everything())
 
 if(type == "intra") {
   interactions <- interactions %>% filter(interaction_type == "Intra")
-  
+
   ## Keep only vertices in intra-chromosomal interactions
-  vertices <- vertices %>% filter(name %in% union(interactions$from, 
+  vertices <- vertices %>% filter(name %in% union(interactions$from,
                                                   interactions$to))
 }
 
-net <- graph_from_data_frame(interactions, 
+net <- graph_from_data_frame(interactions,
                              directed=F, vertices = vertices)
 
 cat("Getting communities\n")
@@ -82,11 +84,10 @@ cat(algorithm, " communities: ", length(comm))
 names(comm$membership) <- comm$names
 
 df_comm <- data.frame(comm$names, comm$membership)
-colnames(df_comm) <- c("ensembl_id", "community")
+colnames(df_comm) <- c("name", "community")
 
 comm_info <- getComInfo(comm$membership, net)
 
 cat("Saving files\n")
 write_tsv(df_comm, snakemake@output[["comm"]])
 write_tsv(comm_info, snakemake@output[["comm_info"]])
-
