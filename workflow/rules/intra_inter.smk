@@ -68,6 +68,16 @@ rule get_intra_inter_summ_cancer:
     script:
         "../scripts/bootstrapIntraInter.R"
 
+rule get_intra_inter_summ_cancer_aracne:
+    input:
+        expand(config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-intra-inter-count-log-bins-{n}.tsv", n = [x+1 for x in range(int(config["bsamples"]))], allow_missing=True)
+    output:
+        config["datadir"]+"/{tissue}/correlation/bootstrap_samples/{cond}-log-bins-summ.tsv"
+    log:
+        config["datadir"]+"/{tissue}/log/{cond}_bootstrap_log_bins_summ.log"
+    script:
+        "../scripts/bootstrapIntraInter.R"
+
 rule get_intra_inter_count_bootstrp:
     input:
         mi_matrix=get_mi_matrix_boot
