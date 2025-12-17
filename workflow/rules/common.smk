@@ -22,6 +22,7 @@ def get_output_files(wildcards):
                 else:
                     files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_spearman_50/cancer-log-bins-summ.tsv')
                     files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_spearman_100/cancer-log-bins-summ.tsv')
+                    files.append(f'{config["datadir"]}/{t}/correlation/bootstrap_spearman_25/cancer-log-bins-summ.tsv')
             elif config["end"] == "tfs":
                 files.append(f'figs/{t}_tf_pgcores.png')
 
