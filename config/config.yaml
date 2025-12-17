@@ -15,10 +15,10 @@ distbin: 100000
 # Size of the size bins (in number of gene-gene interactions)
 sizebin: 1000
 # list of tissues to analyze
-#tissues: ["bladder", "colon", "esophagus", "thyroid", "uterus"]
-tissues: ["colon"]
+tissues: ["bladder", "brain", "breast", "colon", "esophagus", "kidney", "liver", "lung", "ovary", "pancreas", "prostate", "testis", "thyroid", "uterus", "skin"]
 # Path to biomart file to get gene regions
 biomart: /home/dgarciac/Workspace/llrc-networks/input/Biomart_Ensembl80_GRCh38_p2_regions.tsv
 # End step for the workflow
-end: "plots"
-bootstrap_samples: 20
+end: "boots"
+bsamples: 100
+
