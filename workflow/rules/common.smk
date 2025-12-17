@@ -3,10 +3,13 @@ import glob
 def get_output_files(wildcards):
     files = []
     if config["end"] == "other":
-                files.append(f'{config["datadir"]}/diabetes/go-normal-comm-all.tsv')
-                files.append(f'{config["datadir"]}/diabetes/go-cases-comm-all.tsv')
-                files.append(f'{config["datadir"]}/alzheimer/go-normal-comm-all.tsv')
-                files.append(f'{config["datadir"]}/alzheimer/go-cases-comm-all.tsv')
+               files.append(f'{config["datadir"]}/diabetes/go-normal-comm-all.tsv')
+               files.append(f'{config["datadir"]}/diabetes/go-cases-comm-all.tsv')
+               files.append(f'{config["datadir"]}/alzheimer/go-normal-comm-all.tsv')
+               files.append(f'{config["datadir"]}/alzheimer/go-cases-comm-all.tsv')
+               files.append(f'{config["datadir"]}/cardio/go-cases-comm-all.tsv')
+               files.append(f'{config["datadir"]}/cardio/go-normal-comm-all.tsv')
+               files.append(f'{config["datadir"]}/fibrosis/go-cases-comm-all.tsv')
     else:
         for t in config["tissues"]:
             if config["end"] == "plots":
@@ -35,6 +38,9 @@ def get_fig_dir():
 
 def get_mi_matrix(wildcards):
     return f'{config["datadir"]}/{wildcards.tissue}/correlation/{config["data_format"]}_ensembl_{wildcards.cond}.adj'
+
+def get_mi_matrix_others(wildcards):
+    return f'{config["datadir"]}/{wildcards.disease}/ensembl_{wildcards.cond}.adj'
 
 def get_mi_matrix_boot(wildcards):
     return f'{config["datadir"]}/{wildcards.tissue}/correlation/bootstrap_spearman_{wildcards.s}/spearman_bootstrap_{wildcards.n}.tsv'

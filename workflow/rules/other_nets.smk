@@ -27,6 +27,24 @@ rule get_comms_other:
     script:
         "../scripts/communities.R"
 
+rule get_other_network_tables:
+    input:
+        mi_matrix=get_mi_matrix_others,
+        done=config["datadir"]+"/{disease}/log/done.txt"
+    output:
+        interactions=config["datadir"]+"/{disease}/{cond}-interactions.tsv",
+        vertices=config["datadir"]+"/{disease}/{cond}-vertices.tsv"
+    params:
+        annot_cytobands=config["biomart"],
+        annot=config["datadir"]+"/{disease}/annot.RData",
+        cutoff=100000,
+        cond="{cond}"
+    threads: 7 
+    log:
+        config["datadir"]+"/{disease}/log/{cond}_network_table.log"
+    script:
+        "../scripts/networkTables.R"
+    
 rule setup_log:
     output:
         config["datadir"]+"/{disease}/log/done.txt"

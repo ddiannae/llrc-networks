@@ -28,10 +28,10 @@ algorithm <- snakemake@params[["commalg"]]
 getComInfo <- function(cmembership, network){
   comp.info <- lapply(unique(cmembership), function(idc){
     mem <- names(cmembership[cmembership == idc])
-    com <- induced.subgraph(network, mem)
+    com <- induced_subgraph(network, mem)
     intras <- igraph::as_data_frame(com, what = "edges") %>%
       filter(interaction_type == "Intra") %>% nrow()
-    prs <- page.rank(com)
+    prs <- page_rank(com)
     chrs <- table(V(com)$chr)
     edges <- length(E(com))
     return(data.frame(com_id = idc,
